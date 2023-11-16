@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
-export type UserDocument = HydratedDocument<User>;
+// export type UserDocument = HydratedDocument<User>;
 
 @Schema()
 export class User {
@@ -15,7 +15,7 @@ export class User {
   email: string;
 
   @ApiProperty({ example: "vasya1234", description: "User's password" })
-  @Prop({ required: true })
+  @Prop({ required: false })
   password: string;
 
   @ApiProperty({ example: "false", description: "Shows if a user is banned" })
@@ -29,8 +29,8 @@ export class User {
   @Prop()
   banReason: string;
 
-  @Prop()
-  role: Types.ObjectId
+  @Prop({type: [Types.ObjectId], ref: 'Role', required: true})
+  roles: Types.ObjectId[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
