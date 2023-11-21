@@ -26,7 +26,7 @@ export class UsersService {
   }
 
   async getUserByEmail(email: string) {
-    const user = await this.userRepository.findOne({ email: email });
+    const user = await this.userRepository.findOne({ email: email }).populate('roles', '-_id -__v');
     return user;
   }
 }

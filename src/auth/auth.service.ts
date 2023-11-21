@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from "@nestjs/common";
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { UsersService } from "src/users/users.service";
@@ -53,6 +58,8 @@ export class AuthService {
     if (user && passwordsEquals) {
       return user;
     }
-    throw new UnauthorizedException({message: 'Incorrect e-mail or password'})
+    throw new UnauthorizedException({
+      message: "Incorrect e-mail or password",
+    });
   }
 }
