@@ -29,7 +29,7 @@ export class UsersController {
     return this.userService.getAllUsers();
   }
 
-  @Roles('654ce30f8dd50f3e21d2b16b', '654ceb75734409051ec3558c')
+  @Roles(['Admin'])
   @UseGuards(RolesGuard)
   @Get(':email')
   getByEmail(@Param('email') email: string) {

@@ -6,8 +6,7 @@ import {
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
-import { Observable } from "rxjs";
-import { ROLES_KEY } from "./roles-auth.decorator";
+import { Roles } from "./roles-auth.decorator";
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -17,11 +16,7 @@ export class RolesGuard implements CanActivate {
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
-      const requiredRoles = this.reflector.getAllAndOverride(ROLES_KEY, [
-        context.getHandler,
-        context.getClass,
-      ]);
-      console.log(requiredRoles)
+      const requiredRoles = this.reflector.get(Roles, context.getHandler());
       if (!requiredRoles) {
         return true;
       }
@@ -35,7 +30,7 @@ export class RolesGuard implements CanActivate {
       }
       const user = await this.jwtService.verify(token);
       req.user = user;
-      return user.roles.some(role => requiredRoles.include(role.value));
+      return user.roles.some(role => requiredRoles.includes(role.value));
     } catch (e) {
       console.log(e);
       throw new UnauthorizedException({ message: "User is not authorised!" });
