@@ -12,14 +12,15 @@ export class RoleService {
     const newRole = await this.roleRepository.create(dto);
     return newRole.save();
   }
-
+  
+  async getRoles() {
+    const roles = await this.roleRepository.find()
+    return roles;
+  }
+  
   async getRoleByValue(value: string) {
     const role = await this.roleRepository.findOne({ value: value });
     return role;
   }
 
-  async getRoles() {
-    const roles = await this.roleRepository.find()
-    return roles;
-  }
 }
