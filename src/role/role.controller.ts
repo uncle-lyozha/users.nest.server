@@ -3,6 +3,7 @@ import { RoleService } from "./role.service";
 import { CreateRoleDto } from "./dto/create-role.dto";
 import { Roles } from "src/auth/roles-auth.decorator";
 import { RolesGuard } from "src/auth/roles.guard";
+import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 
 @Controller("roles")
 export class RoleController {
@@ -15,6 +16,7 @@ export class RoleController {
 
 
   @Roles(['Admin'])
+  // @UseGuards(JwtAuthGuard)
   @UseGuards(RolesGuard)
   @Get()
   getAll() {
@@ -24,8 +26,8 @@ export class RoleController {
 
   @Roles(['Admin'])
   @UseGuards(RolesGuard)
-  @Get("/:value")
-  getRoleByValue(@Param("value") value: string) {
-    return this.roleservice.getRoleByValue(value);
+  @Get("/:email")
+  getRoleByValue(@Param("email") email: string) {
+    return this.roleservice.getRoleByValue(email);
   }
 }

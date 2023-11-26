@@ -17,7 +17,7 @@ export class UsersService {
   async createUser(dto: CreateUserDto) {
     const newUser = await this.userRepository.create(dto);
     const role = await this.roleService.getRoleByValue("user");
-    await newUser.$set("role", role._id);
+    newUser.$set("role", role._id);
     newUser.roles.push(role._id);
     return newUser.save();
   }
@@ -49,7 +49,6 @@ export class UsersService {
 
   async banUser(dto: BanUserDto) {
     const user = await this.userRepository.findById(dto.userId);
-    console.log(user);
     if (!user) {
       throw new HttpException("Can not find user", HttpStatus.NOT_FOUND);
     }
