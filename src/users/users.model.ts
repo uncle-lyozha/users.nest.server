@@ -7,7 +7,7 @@ import { HydratedDocument, Types } from "mongoose";
 @Schema()
 export class User {
   @ApiProperty({ example: "Vasya", description: "User's name" })
-  @Prop({ required: true })
+  @Prop({ required: false })
   name: string;
 
   @ApiProperty({ example: "vasya@mail.mail", description: "User's e-mail" })
@@ -15,7 +15,7 @@ export class User {
   email: string;
 
   @ApiProperty({ example: "vasya1234", description: "User's password" })
-  @Prop({ required: false })
+  @Prop({ required: true })
   password: string;
 
   @ApiProperty({ example: "false", description: "Shows if a user is banned" })
