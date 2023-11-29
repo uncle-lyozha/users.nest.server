@@ -6,19 +6,33 @@ import { Model, Mongoose } from "mongoose";
 import { RoleService } from "src/role/role.service";
 import { AddRoleDto } from "./dto/add-role.dto";
 import { BanUserDto } from "./dto/ban-user.dto";
+import * as bcrypt from "bcryptjs";
+import { JwtService } from "@nestjs/jwt";
+
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel("User") private userRepository: Model<User>,
-    private roleService: RoleService
+    private roleService: RoleService,
+    private jwtService: JwtService,
   ) {}
 
   async createUser(dto: CreateUserDto) {
-    const newUser = await this.userRepository.create(dto);
+    const candidate = await this.getUserByEmail(dto.email);
+    if (candidate) {
+      throw new HttpException(
+        "User with this e-mail already exists",
+        HttpStatus.BAD_REQUEST
+      );
+    }
+    const hashPassword = await bcrypt.hash(dto.password, 5);
+
+    const newUser = await this.userRepository.create({...dto, password: hashPassword});
     const role = await this.roleService.getRoleByValue("user");
     newUser.$set("role", role._id);
     newUser.roles.push(role._id);
+    this.generateToken(newUser)
     return newUser.save();
   }
 
@@ -56,5 +70,16 @@ export class UsersService {
     user.banReason = dto.banReason;
     user.save();
     return user;
+  }
+
+  private async generateToken(user: User) {
+    const payload = {
+      email: user.email,
+      password: user.password,
+      roles: user.roles,
+    };
+    return {
+      token: this.jwtService.sign(payload),
+    };
   }
 }
